@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: afoozle
- * Date: 3/07/13
- * Time: 5:38 PM
- * To change this template use File | Settings | File Templates.
- */
 
-namespace afoozle\ManageEngine\ServiceDesk\ApiCommand;
+namespace afoozle\ManageEngine\ServiceDesk;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
@@ -43,10 +36,10 @@ class CommandGateway {
     /**
      * Execute a command against the API
      *
-     * @param CommandInterface $command
-     * @return CommandInterface
+     * @param Command\CommandInterface $command
+     * @return Command\CommandInterface
      */
-    public function executeCommand(CommandInterface $command)
+    public function executeCommand(Command\CommandInterface $command)
     {
         $payload = array();
 

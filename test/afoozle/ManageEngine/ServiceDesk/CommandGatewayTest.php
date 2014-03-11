@@ -1,6 +1,6 @@
 <?php
 
-namespace afoozle\ManageEngine\ServiceDesk\ApiCommand;
+namespace afoozle\ManageEngine\ServiceDesk;
 
 use Buzz\Browser;
 use Buzz\Message\Response;
@@ -21,7 +21,7 @@ class CommandGatewayTest extends \PHPUnit_Framework_TestCase {
     {
         $dummyPayload = '<operation></operation>';
 
-        $mockedCommand = \Mockery::mock('\afoozle\ManageEngine\ServiceDesk\ApiCommand\CommandInterface');
+        $mockedCommand = \Mockery::mock('\afoozle\ManageEngine\ServiceDesk\Command\CommandInterface');
         $mockedCommand->shouldReceive('toXml')->withNoArgs()->andReturn($dummyPayload);
         $mockedCommand->shouldReceive('getOperationName')->withNoArgs()->andReturn('MOCK_OPERATION');
         $mockedCommand->shouldReceive('getOperationUrl')->withNoArgs()->andReturn('/sdpapi/request/mock');
@@ -46,7 +46,7 @@ class CommandGatewayTest extends \PHPUnit_Framework_TestCase {
     {
         $dummyPayload = '<operation></operation>';
 
-        $mockedCommand = \Mockery::mock('\afoozle\ManageEngine\ServiceDesk\ApiCommand\CommandInterface');
+        $mockedCommand = \Mockery::mock('\afoozle\ManageEngine\ServiceDesk\Command\CommandInterface');
         $mockedCommand->shouldReceive('toXml')->withNoArgs()->andReturn($dummyPayload);
         $mockedCommand->shouldReceive('getOperationName')->withNoArgs()->andReturn('MOCK_OPERATION');
         $mockedCommand->shouldReceive('getOperationUrl')->withNoArgs()->andReturn('/sdpapi/request/mock');
