@@ -1,5 +1,5 @@
 <?php
-namespace afoozle\ManageEngine\ServiceDesk\ApiCommand;
+namespace afoozle\ManageEngine\ServiceDesk\Command;
 
 class AddWorklog extends CommandAbstract {
 
