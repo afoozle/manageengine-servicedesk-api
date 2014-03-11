@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace afoozle\ManageEngine\ServiceDesk\ApiCommand;
+namespace afoozle\ManageEngine\ServiceDesk\Command;
 
 
 interface CommandInterface {

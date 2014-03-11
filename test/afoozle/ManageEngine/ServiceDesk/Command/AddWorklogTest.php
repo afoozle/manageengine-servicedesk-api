@@ -1,15 +1,12 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: afoozle
- * Date: 3/07/13
- * Time: 5:11 PM
- * To change this template use File | Settings | File Templates.
- */
+namespace afoozle\ManageEngine\ServiceDesk\Command\Worklog;
 
-namespace afoozle\ManageEngine\ServiceDesk\ApiCommand;
+use afoozle\ManageEngine\ServiceDesk\CommandGateway;
 
 class AddWorklogTest extends \PHPUnit_Framework_TestCase {
+
+    private $technicianApiCode = '12377F1F-9181-4EAF-B761-B19BE37E39E7';
+    private $servicedeskTicket = 97639;
 
     public function testGetOperationName()
     {
@@ -107,6 +104,21 @@ RESPONSE;
 
         $command->processResponse($responseText);
         $this->assertEquals(false, $command->wasSuccessful(), "Response parsed incorrectly");
+    }
+
+    public function testLiveRequest()
+    {
+        $command = new AddWorklog();
+        $command
+            ->setRequestId($this->servicedeskTicket)
+            ->setDescription('test description')
+            ->setTechnician('Matthew Wheeler')
+            ->setWorkMinutes(15);
+
+        $commandGateway = new CommandGateway('http://servicedesk.peakadventuretravel.com/', $this->technicianApiCode);
+        $commandGateway->executeCommand($command);
+
+        $this->assertEquals(true, $command->wasSuccessful(), "Command failed, log:\n".var_export($command->getLogs(),true));
     }
 
 }

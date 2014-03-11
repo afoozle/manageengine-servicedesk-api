@@ -1,7 +1,13 @@
 <?php
-namespace afoozle\ManageEngine\ServiceDesk\Command;
+namespace afoozle\ManageEngine\ServiceDesk\Command\Worklog;
 
-class AddWorklog extends CommandAbstract {
+use afoozle\ManageEngine\ServiceDesk\Command\CommandAbstract;
+use afoozle\ManageEngine\ServiceDesk\Command\CommandInterface;
+
+/**
+ * @link http://www.manageengine.com/products/service-desk/help/adminguide/api/worklog-operations.html
+ */
+class AddWorklog extends CommandAbstract implements CommandInterface {
 
     /**
      * @var int
@@ -32,6 +38,16 @@ class AddWorklog extends CommandAbstract {
      * @var int
      */
     private $workHours = null;
+
+    /**
+     * @var \DateTime
+     */
+    private $startTime = null;
+
+    /**
+     * @var \DateTime
+     */
+    private $executedTime = null;
 
     /**
      * @return string
@@ -72,6 +88,20 @@ class AddWorklog extends CommandAbstract {
         $worklogTag->appendChild(new \DOMElement('cost', $this->getCost()));
         $worklogTag->appendChild(new \DOMElement('workMinutes', $this->getWorkMinutes()));
         $worklogTag->appendChild(new \DOMElement('workHours', $this->getWorkHours()));
+
+        if ($this->getStartTime() !== null) {
+            $worklogTag->appendChild(new \DomElement('startTime', $this->getStartTime()->format(DATE_W3C)));
+        }
+
+        $endTime = $this->getEndTime();
+        if ($endTime !== null) {
+            $worklogTag->appendChild(new \DomElement('endTime', $endTime->format(DATE_W3C)));
+        }
+
+        // executedTime
+        if ($this->getExecutedTime() !== null) {
+            $worklogTag->appendChild(new \DOMElement('executedTime', $this->getExecutedTime()->format(DATE_W3C)));
+        }
 
         return $fragment->saveXML($operationTag);
     }
@@ -197,5 +227,64 @@ class AddWorklog extends CommandAbstract {
     public function getRequestId()
     {
         return $this->requestId;
+    }
+
+    /**
+     * @param \DateTime $startTime
+     */
+    public function setStartTime(\DateTime $startTime = null)
+    {
+        $this->startTime = $startTime;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+
+    /**
+     * Calculate and return the end time given the start time and work hours
+     *
+     * @return \DateTime
+     */
+    public function getEndTime()
+    {
+        $endTime = new \DateTime('now');
+        if ($this->getStartTime() !== null && ($this->getWorkHours() > 0 || $this->getWorkMinutes() > 0)) {
+
+            $timespanSeconds = 0;
+            if ($this->getWorkHours() > 0) {
+                $timespanSeconds += $this->getWorkHours() * 3600;
+            }
+            if ($this->getWorkMinutes() > 0) {
+                $timespanSeconds += $this->getWorkMinutes() * 60;
+            }
+
+            if ($timespanSeconds > 0) {
+                $endTime = clone($this->getStartTime());
+                $endTime->add(new \DateInterval('PT'.$timespanSeconds.'S'));
+                return $endTime;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param \DateTime $executedTime
+     */
+    public function setExecutedTime(\DateTime $executedTime)
+    {
+        $this->executedTime = $executedTime;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExecutedTime()
+    {
+        return $this->executedTime;
     }
 }
